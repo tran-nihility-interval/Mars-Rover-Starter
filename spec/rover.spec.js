@@ -17,22 +17,22 @@ it("constructor sets position and default values for mode and generatorWatts", f
 });
 //Test 8
 it("response returned by receiveMessage contains the name of the message", function() {
-  //let commands = [new Command('MODE_CHANGE', 'LOW_POWER'), new Command ('STATUS_CHECK')];
-  //let message = new Message('Test message with two commands', commands);
+  let commands = [new Command('MODE_CHANGE', 'LOW_POWER'), new Command ('STATUS_CHECK')];
+  let message = new Message('Test message with two commands', commands);
   let rover = new Rover(360);
-  let response = rover.receiveMessage(message);
-  expect(response.message).toEqual(message.name);
-  console.log(response);
+  let roverResponse = rover.receiveMessage(message);
+  expect(roverResponse.message).toEqual(message.name);
+  //console.log(response);
 
 
 });
 //Test 9
 it("response returned by receiveMessage includes two results if two commands are sent in the message", function() {
   let commands = [new Command('MODE_CHANGE', 'LOW_POWER'), new Command ('STATUS_CHECK')];
-  let message = new Message('Test message with two commands', commands);
+  let message = new Message('two commands', commands);
   let rover = new Rover(360);
-  let response = rover.receiveMessage(message);
-  //expect(response.message).toEqual(message.name);
+  let roverResponse = rover.receiveMessage(message);
+  expect(roverResponse.results.length).toEqual(2);
   //console.log(response);
 
 });
@@ -41,8 +41,8 @@ it("responds correctly to the status check command", function() {
   let commands = [new Command('MODE_CHANGE', 'LOW_POWER'), new Command ('STATUS_CHECK')];
   let message = new Message('Test message with two commands', commands);
   let rover = new Rover(360);
-  let response = rover.receiveMessage(message);
-  //expect(response.message).toEqual(message.name);
+  let roverResponse = rover.receiveMessage(message);
+  expect(roverResponse.message).toEqual(message.name);
  // console.log(response);
 
 });
@@ -50,31 +50,35 @@ it("responds correctly to the status check command", function() {
 //Test 11
 it("responds correctly to the mode change command", function() {
   let commands = [new Command('MODE_CHANGE', 'LOW_POWER'), new Command ('STATUS_CHECK')];
-  let message = new Message('Test message with two commands', commands);
+  let message = new Message('New mode command', commands);
   let rover = new Rover(360);
-  let response = rover.receiveMessage(message);
-  //expect(response.message).toEqual(message.name);
+  let roverResponse = rover.receiveMessage(message);
+ // expect(roverResponse.message).toEqual(message.results[1].completed, true);
+  expect(roverResponse.message).toEqual(message.results[1].roverStatus.mode,'LOW_POWER')
   //console.log(response);
 
 });
 //Test 12
 it("responds with a false completed value when attempting to move in LOW_POWER mode", function() {
   let commands = [new Command('MODE_CHANGE', 'LOW_POWER'), new Command ('STATUS_CHECK')];
-  let message = new Message('Test message with two commands', commands);
+  let message = new Message('New mode command', commands);
   let rover = new Rover(360);
-  let response = rover.receiveMessage(message);
-  //expect(response.message).toEqual(message.name);
+  let roverResponse = rover.receiveMessage(message);
+  expect(roverResponse.message).toEqual(message.results[0].complete,'false');
+  expect(roverResponse.message).toEqual(message.results[1].roverStatus.mode,'LOW_POWER')
   //console.log(response);
 
 });
 //Test 13
 it("responds with the position for the move command",function() {
   let commands = [new Command('MOVE', 300), new Command ('STATUS_CHECK')];
-  let message = new Message('Test message with two commands', commands);
+  let message = new Message('New position', commands);
   let rover = new Rover(360);
-  let response = rover.receiveMessage(message);
-  //expect(response.message).toEqual(message.name);
- // expect(response.message).toEqual(' ');
+  let roverResponse = rover.receiveMessage(message);
+  //expect(myResponse.message).toEqual(message.results[0].completed, true);
+  //expect(myResponse.message).toEqual(results[0].roverStatus.position, 360)
+  expect(rover.position).toEqual(360);
+  expect(roverResponse.results[1]).toEqual(true)
   
 
 });
